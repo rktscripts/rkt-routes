@@ -18,6 +18,6 @@ Sistema de rota simples para qb-core.
 ## 🔗 Links
 [![discord](https://i.ibb.co/vBFkTcX/discord-RKT.png)](https://discord.gg/yCcj4b7cXP)
 
-[![tebex](https://i.ibb.co/YTzFgfH/tebexRkt.png)](https://discord.gg/yCcj4b7cXP)
+[![tebex](https://i.ibb.co/YTzFgfH/tebexRkt.png)](https://rktscripts.tebex.io/)
 
 
