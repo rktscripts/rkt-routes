@@ -1,4 +1,4 @@
-QBCore = exports['rkt-core']:GetCoreObject()
+QBCore = exports['qb-core']:GetCoreObject()
 local inRoute = false
 local selected = 1
 
@@ -68,7 +68,14 @@ end)
 
 function onEnter(self)
     if not inRoute then
-        lib.showTextUI(Config.Lang.star_route_label)
+        lib.showTextUI(Config.Lang.star_route_label, {
+            icon = 'E',
+            style = {
+                borderRadius = '8px',
+                backgroundColor = '#020202',
+                color = '#6f52c1'
+            }
+        })
     end
 end
 
@@ -95,7 +102,7 @@ end
 function createBlips(type, selected)
     blips = AddBlipForCoord(Config.route[type]['route'][selected].x, Config.route[type]['route'][selected].y, Config.route[type]['route'][selected].z)
     SetBlipSprite(blips, 1)
-    SetBlipColour(blips, 5)
+    SetBlipColour(blips, 50)
     SetBlipScale(blips, 0.4)
     SetBlipAsShortRange(blips, false)
     SetBlipRoute(blips, true)
@@ -118,7 +125,7 @@ function startRoute(type)
         local maxRoute = 1
         if distance <= 5.0 then
             timedistance = 4
-            DrawMarker(23, Config.route[type]['route'][selected].x, Config.route[type]['route'][selected].y, Config.route[type]['route'][selected].z-0.98, 0, 0, 0, 0, 0.0, 0.0, 1.0, 1.0, 0.0, 195, 23, 24, 200, 0, 0, 0, 0)
+            DrawMarker(23, Config.route[type]['route'][selected].x, Config.route[type]['route'][selected].y, Config.route[type]['route'][selected].z-0.98, 0, 0, 0, 0, 0.0, 0.0, 1.0, 1.0, 0.0, 111, 82, 193, 200, 0, 0, 0, 0)
             if distance <= 2 then
                 if not IsPedInAnyVehicle(ped) and IsControlJustReleased(0, 38) then
                     if inRoute then

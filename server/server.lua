@@ -1,4 +1,4 @@
-QBCore = exports['rkt-core']:GetCoreObject()
+QBCore = exports['qb-core']:GetCoreObject()
 
 lib.callback.register('rkt:routes:server:pay', function(source, type)
     local src = source
