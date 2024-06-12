@@ -1,4 +1,4 @@
-QBCore = exports['qb-core']:GetCoreObject()
+local lang = Config.Lang['pt-br']
 local inRoute = false
 local selected = 1
 
@@ -22,11 +22,11 @@ CreateThread(function ()
                 radius = 1,
                 debug = Config.debug,
                 options = {
-                    label = Config.Lang.star_route_label_target,
+                    label = lang.star_route_label_target,
                     icon = 'box',
                     distance = 1,
                     onSelect = function ()
-                        QBCore.Functions.Notify(Config.Lang.star_route_notify, "success", 2000)
+                        Notify('SUCCESS', lang.star_route_notify, "success")
                         createBlips(k, selected)
                         inRoute = true
                         startRoute(k)
@@ -47,9 +47,9 @@ CreateThread(function ()
                 {
                     type = "client",
                     icon = 'box',
-                    label = Config.Lang.star_route_label_target,
+                    label = lang.star_route_label_target,
                     action = function(entity)
-                        QBCore.Functions.Notify(Config.Lang.star_route_notify, "success", 2000)
+                        Notify('SUCCESS', lang.star_route_notify, "success")
                         createBlips(k, selected)
                         inRoute = true
                         startRoute(k)
@@ -68,7 +68,7 @@ end)
 
 function onEnter(self)
     if not inRoute then
-        lib.showTextUI(Config.Lang.star_route_label, {
+        lib.showTextUI(lang.star_route_label, {
             icon = 'E',
             style = {
                 borderRadius = '8px',
@@ -85,7 +85,7 @@ end
 
 function inside(self)
     if IsControlJustPressed(0, 38) then
-        QBCore.Functions.Notify(Config.Lang.star_route_notify, "success", 2000)
+        Notify('SUCCESS', lang.star_route_notify, "success")
         createBlips(self.id, selected)
         inRoute = true
         startRoute(self.id)
@@ -93,6 +93,13 @@ function inside(self)
     end
 end
 
+function Notify(title, text, type)
+    lib.notify({
+        title = title,
+        description = text,
+        type = type
+    })
+end
 
 --------------------------------------------------------------
 --------------- ROUTE BLIPS CREATE
@@ -107,7 +114,7 @@ function createBlips(index, selected)
     SetBlipAsShortRange(blips, false)
     SetBlipRoute(blips, true)
     BeginTextCommandSetBlipName("STRING")
-    AddTextComponentString(Config.Lang.blip_route)
+    AddTextComponentString(lang.blip_route)
     EndTextCommandSetBlipName(blips)
 end
 
@@ -131,7 +138,7 @@ function startRoute(index)
                     if inRoute then
                         if lib.progressBar({
                             duration = Config.progress.duration,
-                            label = Config.Lang.route_label_progress,
+                            label = lang.route_label_progress,
                             position = Config.progress.position,
                             useWhileDead = false,
                             allowSwimming = false,
@@ -179,7 +186,7 @@ end
 --------------------------------------------------------------
 --------------- CREATE PED
 --------------------------------------------------------------
-
+local routeMan = 0
 CreateThread(function ()
     for k,v in pairs(Config.route) do
         RequestModel(GetHashKey(v.ped.model))
@@ -203,13 +210,13 @@ end)
 --------------- CANCEL ROUTE
 --------------------------------------------------------------
 
-RegisterKeyMapping('+cancelroute', Config.Lang.finish_route_keymap, 'keyboard', Config.Finishkey)
+RegisterKeyMapping('+cancelroute', lang.finish_route_keymap, 'keyboard', Config.Finishkey)
 
 RegisterCommand('+cancelroute', function()
     if inRoute then
         inRoute = false
         selected = 1
         RemoveBlip(blips)
-        QBCore.Functions.Notify(Config.Lang.finish_route_notify, "error", 2000)
+        Notify('ERROR', lang.finish_route_notify, "error")
     end
-end)
+end, false)
