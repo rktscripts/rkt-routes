@@ -1,5 +1,6 @@
 
 CreateThread(function ()
+    if GetResourceState('qb-core') == 'started' then QBCore = exports['qb-core']:GetCoreObject() end
     if GetResourceState('qb-inventory') == 'started' or GetResourceState('ps-inventory') == 'started' then
         Inventory = 'qb'
     elseif GetResourceState('ox_inventory') == 'started' then
@@ -17,7 +18,6 @@ lib.callback.register('rkt:routes:server:pay', function(source, index)
     if not pay then
         for i = 1, #Config.Rewards[index].reward do
             if Inventory == 'qb' then
-                QBCore = exports['qb-core']:GetCoreObject()
                 local xPlayer = QBCore.Functions.GetPlayer(src)
                 if xPlayer.Functions.AddItem(Config.Rewards[index].reward[i], amount) then
                     pay = true
