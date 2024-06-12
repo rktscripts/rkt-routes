@@ -1,9 +1,9 @@
-fx_version 'cerulean'
+fx_version "cerulean"
+use_experimental_fxv2_oal 'yes'
 game 'gta5'
 lua54 'yes'
-author 'rkt'
-description 'Route Script For QBCore'
-version '1.0.0'
+
+version '1.0'
 
 client_scripts {
 	"client/*.lua"
@@ -11,7 +11,8 @@ client_scripts {
 
 server_scripts {
 	"server/server.lua",
-    "server/cfg.lua"
+    "server/cfg.lua",
+	"server/version.lua"
 }
 
 shared_scripts {'@ox_lib/init.lua', 'shared/*.lua' }
