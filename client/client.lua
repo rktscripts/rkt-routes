@@ -99,10 +99,10 @@ end
 --------------------------------------------------------------
 
 
-function createBlips(type, selected)
-    blips = AddBlipForCoord(Config.route[type]['route'][selected].x, Config.route[type]['route'][selected].y, Config.route[type]['route'][selected].z)
+function createBlips(index, selected)
+    blips = AddBlipForCoord(Config.route[index]['route'][selected].x, Config.route[index]['route'][selected].y, Config.route[index]['route'][selected].z)
     SetBlipSprite(blips, 1)
-    SetBlipColour(blips, 50)
+    SetBlipColour(blips, Config.blipColor)
     SetBlipScale(blips, 0.4)
     SetBlipAsShortRange(blips, false)
     SetBlipRoute(blips, true)
@@ -115,37 +115,45 @@ end
 --------------- ROUTE START
 --------------------------------------------------------------
 
-function startRoute(type)
+function startRoute(index)
     while inRoute do
         local ped = PlayerPedId()
         local timedistance = 1000
-        local releaseCoords = vector3(Config.route[type]['route'][selected].x, Config.route[type]['route'][selected].y, Config.route[type]['route'][selected].z)
+        local releaseCoords = vector3(Config.route[index]['route'][selected].x, Config.route[index]['route'][selected].y, Config.route[index]['route'][selected].z)
         local targetCoords = GetEntityCoords(ped)
         local distance = #(releaseCoords-targetCoords.xyz)
         local maxRoute = 1
         if distance <= 5.0 then
             timedistance = 4
-            DrawMarker(23, Config.route[type]['route'][selected].x, Config.route[type]['route'][selected].y, Config.route[type]['route'][selected].z-0.98, 0, 0, 0, 0, 0.0, 0.0, 1.0, 1.0, 0.0, 111, 82, 193, 200, 0, 0, 0, 0)
+            DrawMarker(23, Config.route[index]['route'][selected].x, Config.route[index]['route'][selected].y, Config.route[index]['route'][selected].z-0.98, 0, 0, 0, 0, 0.0, 0.0, 1.0, 1.0, 0.0, Config.markerColor[1], Config.markerColor[2], Config.markerColor[3], 200, 0, 0, 0, 0)
             if distance <= 2 then
                 if not IsPedInAnyVehicle(ped) and IsControlJustReleased(0, 38) then
                     if inRoute then
                         if lib.progressBar({
-                            duration = 2000,
-                            position = 'bottom',
+                            duration = Config.progress.duration,
+                            label = Config.Lang.route_label_progress,
+                            position = Config.progress.position,
                             useWhileDead = false,
+                            allowSwimming = false,
+                            allowCuffed = false,
+                            allowFalling = false,
                             canCancel = true,
                             disable = {
                                 car = true,
+                                move = true,
+                                combat = true,
+                                sprint = true
                             },
                             anim = {
-                                dict = 'mp_player_intdrink',
-                                clip = 'loop_bottle'
+                                dict = Config.progress.anim.dict,
+                                clip = Config.progress.anim.clip,
+                                flag = 0
                             },
                         }) then
                             lib.callback('rkt:routes:server:pay', source, function(pagamento)
                                 if pagamento then
                                     RemoveBlip(blips)
-                                    for i = 0, #Config.route[type]['route'] do
+                                    for i = 0, #Config.route[index]['route'] do
                                         maxRoute = i
                                     end
                                     if selected == maxRoute then
@@ -153,9 +161,9 @@ function startRoute(type)
                                     else
                                         selected = selected + 1
                                     end
-                                    createBlips(type, selected)
+                                    createBlips(index, selected)
                                 end
-                            end, type)
+                            end, index)
                         else
                             
                         end

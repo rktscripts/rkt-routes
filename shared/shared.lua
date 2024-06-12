@@ -2,6 +2,8 @@ Config = {}
 Config.debug = true
 Config.target = false -- qb-target, ox_target or false
 Config.Finishkey = "F7"
+Config.blipColor = 50
+Config.markerColor = {111, 82, 193} -- R,G,B
 
 Config.route = {
     [1] = {
@@ -51,8 +53,8 @@ Config.progress = {
     duration = 2000,
     position = 'bottom',
     anim = {
-        dict = 'mp_player_intdrink',
-        clip = 'loop_bottle'
+        dict = 'amb@prop_human_parking_meter@female@idle_a',
+        clip = 'idle_a_female'
     },
 }
 
@@ -60,6 +62,7 @@ Config.Lang = {
     star_route_label = '[E] - Iniciar rota',
     star_route_label_target = 'Iniciar rota',
     star_route_notify = 'Rota Iniciada',
+    route_label_progress = 'Coletando...',
     error_route_notify = 'Você já está com uma rota ativa.',
     finish_route_notify = 'Rota finalizada',
     finish_route_keymap = 'Cancelar Rota"',
