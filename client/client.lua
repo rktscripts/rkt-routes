@@ -1,4 +1,4 @@
-local lang = Config.Lang['pt-br']
+local lang = Config.Lang['en']
 local inRoute = false
 local selected = 1
 
@@ -15,48 +15,50 @@ CreateThread(function ()
                 onExit = onExit
             })
         end
-    elseif Config.Target == 'ox_target' then
+    elseif Config.target == 'ox_target' then
         for k,v in pairs(Config.route) do
             exports.ox_target:addSphereZone({
                 coords = v.start,
                 radius = 1,
                 debug = Config.debug,
                 options = {
-                    label = lang.star_route_label_target,
-                    icon = 'box',
-                    distance = 1,
-                    onSelect = function ()
-                        Notify('SUCCESS', lang.star_route_notify, "success")
-                        createBlips(k, selected)
-                        inRoute = true
-                        startRoute(k)
-                    end
+                    {
+                        name = 'sphere',
+                        icon = 'fas fa-box',
+                        label = lang.star_route_label,
+                        onSelect = function ()
+                            if not inRoute then
+                                Notify('SUCCESS', lang.star_route_notify, "success")
+                                createBlips(k, selected)
+                                inRoute = true
+                                startRoute(k)
+                            end
+                        end
+                    }
                 }
             })
         end
-    elseif Config.Target == 'qb-target' then
+    elseif Config.target == 'qb-target' then
         for k,v in pairs(Config.route) do
-        exports['qb-target']:AddBoxZone("name", v.start, 1.5, 1.6, { 
-            name = "name",
-            heading = 12.0,
-            debugPoly = Config.debug,
-            minZ = 36.7,
-            maxZ = 38.9,
+            exports['qb-target']:AddCircleZone(k, v.start, 1, { 
+                name = 'route'..k,
+                debug = true,
             }, {
-            options = {
-                {
-                    type = "client",
-                    icon = 'box',
-                    label = lang.star_route_label_target,
-                    action = function(entity)
-                        Notify('SUCCESS', lang.star_route_notify, "success")
-                        createBlips(k, selected)
-                        inRoute = true
-                        startRoute(k)
-                    end,
+                options = {
+                    {
+                        icon = 'fas fa-box',
+                        label = lang.star_route_label,
+                        action = function()
+                            if not inRoute then
+                                Notify('SUCCESS', lang.star_route_notify, "success")
+                                createBlips(k, selected)
+                                inRoute = true
+                                startRoute(k)
+                            end
+                        end
                     }
                 },
-                distance = 1,
+                distance = 1.0
             })
         end
     end
@@ -123,6 +125,8 @@ end
 --------------------------------------------------------------
 
 function startRoute(index)
+    local messageHudNearPoint = false
+    local closeToAtLeastOne = false
     while inRoute do
         local ped = PlayerPedId()
         local timedistance = 1000
@@ -130,8 +134,21 @@ function startRoute(index)
         local targetCoords = GetEntityCoords(ped)
         local distance = #(releaseCoords-targetCoords.xyz)
         local maxRoute = 1
+        closeToAtLeastOne = false
         if distance <= 5.0 then
+            closeToAtLeastOne = true
             timedistance = 4
+            if not messageHudNearPoint then
+                lib.showTextUI(lang.pickup_label, {
+                    icon = 'fas fa-e',
+                    style = {
+                        borderRadius = '8px',
+                        backgroundColor = '#020202',
+                        color = '#6f52c1'
+                    }
+                })
+                messageHudNearPoint = true
+            end
             DrawMarker(23, Config.route[index]['route'][selected].x, Config.route[index]['route'][selected].y, Config.route[index]['route'][selected].z-0.98, 0, 0, 0, 0, 0.0, 0.0, 1.0, 1.0, 0.0, Config.markerColor[1], Config.markerColor[2], Config.markerColor[3], 200, 0, 0, 0, 0)
             if distance <= 2 then
                 if not IsPedInAnyVehicle(ped) and IsControlJustReleased(0, 38) then
@@ -169,6 +186,7 @@ function startRoute(index)
                                         selected = selected + 1
                                     end
                                     createBlips(index, selected)
+                                    lib.hideTextUI()
                                 end
                             end, index)
                         else
@@ -177,6 +195,12 @@ function startRoute(index)
                         
                     end
                 end
+            end
+        end
+        if closeToAtLeastOne == false then
+            if messageHudNearPoint then
+                lib.hideTextUI()
+                messageHudNearPoint = false
             end
         end
         Wait(timedistance)
